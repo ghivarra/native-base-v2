@@ -4,9 +4,9 @@ import {
   Keyboard,
   Platform,
   Animated,
-  ViewPropTypes,
   PanResponder,
 } from 'react-native';
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
@@ -59,13 +59,13 @@ class ToastContainer extends Component {
   }
 
   componentDidMount() {
-    Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
-    Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
+    this.keyboardShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+    this.keyboardHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
   }
 
   componentWillUnmount() {
-    Keyboard.removeListener('keyboardDidShow', this.keyboardDidShow);
-    Keyboard.removeListener('keyboardDidHide', this.keyboardDidHide);
+    this.keyboardShowSub && this.keyboardShowSub.remove()
+    this.keyboardHideSub && this.keyboardHideSub.remove()
   }
 
   getToastStyle() {

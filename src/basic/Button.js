@@ -15,6 +15,7 @@ import { PLATFORM } from '../theme/variables/commonColor';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 
 import { Text } from './Text';
+import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 
 class Button extends React.PureComponent {
@@ -152,7 +153,7 @@ class Button extends React.PureComponent {
 }
 
 Button.propTypes = {
-  ...TouchableOpacity.propTypes,
+  ...TouchableOpacityProps,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

@@ -7,6 +7,7 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
 
 import NativeBaseComponent from './Base/NativeBaseComponent';
+import { TextInputPropTypes } from 'deprecated-react-native-prop-types';
 
 class Input extends NativeBaseComponent {
   render() {
@@ -33,7 +34,7 @@ class Input extends NativeBaseComponent {
 }
 
 Input.propTypes = {
-  ...TextInput.propTypes,
+  ...TextInputPropTypes,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

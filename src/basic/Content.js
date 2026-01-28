@@ -1,12 +1,12 @@
 import { connectStyle } from 'native-base-shoutem-theme';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { SafeAreaView } from 'react-native';
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
 
 import variable from '../theme/variables/platform';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
+import { SafeAreaView } from "react-native-safe-area-context"
 
 class Content extends PureComponent {
   static contextTypes = {

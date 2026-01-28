@@ -4,6 +4,7 @@ import { Image } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
+import { ImagePropTypes } from 'deprecated-react-native-prop-types';
 
 class Thumbnail extends Component {
   render() {
@@ -12,7 +13,7 @@ class Thumbnail extends Component {
 }
 
 Thumbnail.propTypes = {
-  ...Image.propTypes,
+  ...ImagePropTypes,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

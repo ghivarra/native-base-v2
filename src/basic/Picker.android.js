@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
+import { PickerProps } from '../utils/PickerProps';
 
 export default class PickerNB extends Component {
   render() {
@@ -25,7 +26,7 @@ PickerNB.Item = createReactClass({
 });
 
 PickerNB.propTypes = {
-  ...Picker.propTypes
+  ...PickerProps
 };
 
 const StyledPickerNB = connectStyle(

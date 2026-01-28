@@ -8,6 +8,7 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
 import { PLATFORM } from '../theme/variables/commonColor';
 import computeProps from '../utils/computeProps';
+import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 class CheckBox extends Component {
   static contextTypes = {
@@ -81,7 +82,7 @@ class CheckBox extends Component {
 }
 
 CheckBox.propTypes = {
-  ...TouchableOpacity.propTypes,
+  ...TouchableOpacityProps,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

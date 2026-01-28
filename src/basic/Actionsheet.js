@@ -10,8 +10,8 @@ import {
   Platform,
   TouchableOpacity,
   StyleSheet,
-  ViewPropTypes,
 } from 'react-native';
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';

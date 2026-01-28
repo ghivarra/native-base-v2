@@ -20,6 +20,7 @@ import { Input } from './Input';
 import { Label } from './Label';
 import { Icon } from './Icon';
 import { Thumbnail } from './Thumbnail';
+import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 class Item extends Component {
   constructor(props) {
@@ -450,7 +451,7 @@ class Item extends Component {
 }
 
 Item.propTypes = {
-  ...TouchableOpacity.propTypes,
+  ...TouchableOpacityProps,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

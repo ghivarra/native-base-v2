@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
 import computeProps from '../utils/computeProps';
+import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 class Radio extends Component {
   static contextTypes = {
@@ -83,7 +84,7 @@ class Radio extends Component {
 }
 
 Radio.propTypes = {
-  ...TouchableOpacity.propTypes,
+  ...TouchableOpacityProps,
   selected: PropTypes.bool,
   standardStyle: PropTypes.bool
 };

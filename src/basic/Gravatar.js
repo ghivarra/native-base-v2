@@ -9,6 +9,7 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import computeProps from '../utils/computeProps';
 
 import NativeBaseComponent from './Base/NativeBaseComponent';
+import { ImagePropTypes } from 'deprecated-react-native-prop-types';
 
 const GRAVATAR_URI = 'https://www.gravatar.com/avatar/';
 
@@ -54,7 +55,7 @@ class Gravatar extends NativeBaseComponent {
 }
 
 Gravatar.propTypes = {
-  ...Image.propTypes,
+  ...ImagePropTypes,
   email: PropTypes.string.isRequired,
   style: PropTypes.oneOfType([
     PropTypes.object,

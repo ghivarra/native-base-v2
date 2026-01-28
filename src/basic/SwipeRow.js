@@ -48,15 +48,6 @@ class SwipeRow extends Component {
     });
   }
 
-  getPreviewAnimation(toValue, delay) {
-    return Animated.timing(this._translateX, {
-      duration: this.props.previewDuration,
-      toValue,
-      delay,
-      useNativeDriver: true
-    });
-  }
-
   onContentLayout(e) {
     this.setState({
       dimensionsSet: !this.props.recalculateHiddenLayout,
@@ -74,6 +65,15 @@ class SwipeRow extends Component {
         }
       );
     }
+  }
+
+  getPreviewAnimation(toValue, delay) {
+    return Animated.timing(this._translateX, {
+      duration: this.props.previewDuration,
+      toValue,
+      delay,
+      useNativeDriver: true
+    });
   }
 
   handleOnMoveShouldSetPanResponder(e, gs) {

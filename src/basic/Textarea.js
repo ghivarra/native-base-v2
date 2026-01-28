@@ -6,6 +6,7 @@ import { connectStyle } from 'native-base-shoutem-theme';
 import variables from '../theme/variables/platform';
 import computeProps from '../utils/computeProps';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
+import { TextInputPropTypes } from 'deprecated-react-native-prop-types';
 
 class Textarea extends Component {
   getStyle() {
@@ -44,7 +45,7 @@ class Textarea extends Component {
 }
 
 Textarea.propTypes = {
-  ...TextInput.propTypes,
+  ...TextInputPropTypes,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

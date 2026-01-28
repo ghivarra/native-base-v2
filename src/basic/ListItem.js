@@ -10,6 +10,7 @@ import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
+import { TouchableHighlightProps } from '../utils/TouchableHighlightProps';
 
 class ListItem extends Component {
   static contextTypes = {
@@ -59,7 +60,7 @@ class ListItem extends Component {
 }
 
 ListItem.propTypes = {
-  ...TouchableHighlight.propTypes,
+  ...TouchableHighlightProps,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

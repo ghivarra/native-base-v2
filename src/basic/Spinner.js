@@ -32,7 +32,9 @@ class Spinner extends Component {
 }
 
 Spinner.propTypes = {
-  ...ActivityIndicator.propTypes,
+  animating: PropTypes.bool,
+  hidesWhenStopped: PropTypes.bool,
+  size: PropTypes.oneOfType([PropTypes.oneOf(["small", "large"])], PropTypes.number),
   color: PropTypes.string,
   inverse: PropTypes.bool
 };

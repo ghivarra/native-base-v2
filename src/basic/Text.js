@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
+import { TextPropTypes } from 'deprecated-react-native-prop-types';
 
 class Text extends React.PureComponent {
   setRoot(c) {
@@ -35,7 +36,7 @@ class Text extends React.PureComponent {
 }
 
 Text.propTypes = {
-  ...RNText.propTypes,
+  ...TextPropTypes,
   uppercase: PropTypes.bool,
   style: PropTypes.oneOfType([
     PropTypes.object,

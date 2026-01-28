@@ -4,6 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
+import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 class CardItem extends Component {
   render() {
@@ -27,7 +28,7 @@ class CardItem extends Component {
 }
 
 CardItem.propTypes = {
-  ...TouchableOpacity.propTypes,
+  ...TouchableOpacityProps,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,
