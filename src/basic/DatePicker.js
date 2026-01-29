@@ -55,9 +55,7 @@ export class DatePicker extends React.Component {
       timeZoneOffsetInMinutes
     } = this.props;
 
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const variables = (theme && theme['@@shoutem.theme/themeStyle'] && theme['@@shoutem.theme/themeStyle'].variables) ? theme['@@shoutem.theme/themeStyle'].variables.variables : variable;
 
     return (
       <View>

@@ -53,8 +53,12 @@ class IconNB extends React.PureComponent {
 
   getIcon(type) {
     if (!type) {
-      const themeType = this.props.theme['@@shoutem.theme/themeStyle'].variables.iconFamily;
-      return ICON_MAP[themeType] || Ionicons;
+      if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables && this.props.theme['@@shoutem.theme/themeStyle'].variables.iconFamily) {
+        const themeType = this.props.theme['@@shoutem.theme/themeStyle'].variables
+        return ICON_MAP[themeType]
+      }
+      
+      return Ionicons
     }
     return ICON_MAP[type] || Ionicons;
   }

@@ -58,8 +58,10 @@ const DefaultTabBar = createReactClass({
   },
 
   getVariables(props) {
-    const themeVars = props.theme['@@shoutem.theme/themeStyle'].variables;
-    return themeVars || variable;
+    if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables) {
+      return this.props.theme['@@shoutem.theme/themeStyle'].variables
+    }
+    return variable
   },
 
   renderTab(
