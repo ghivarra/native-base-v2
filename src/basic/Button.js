@@ -65,7 +65,7 @@ class Button extends React.PureComponent {
 
     return {
       ...others,
-      style: [initial, style]
+      style: StyleSheet.flatten([initial, style])
     };
   }
 

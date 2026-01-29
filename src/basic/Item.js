@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Animated,
   View,
+  StyleSheet,
 } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
 
@@ -68,7 +69,7 @@ class Item extends Component {
     const { style, ...others } = this.props;
     return {
       ...others,
-      style: [this.getInitialStyle().roundedInputGroup, style],
+      style: StyleSheet.flatten([this.getInitialStyle().roundedInputGroup, style]),
     };
   }
 
