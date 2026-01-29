@@ -88,9 +88,9 @@ const DefaultTabBar = createReactClass({
     if (isDisabled) {
       textColor = disabledTextColor;
     } else if (isTabActive) {
-      textColor = activeTextStyle?.color || activeTextColor;
+      textColor = activeTextStyle.color || activeTextColor;
     } else {
-      textColor = textStyle?.color || inactiveTextColor;
+      textColor = textStyle.color || inactiveTextColor;
     }
 
     const accessibilityState = {
