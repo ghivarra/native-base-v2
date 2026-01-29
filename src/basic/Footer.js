@@ -1,22 +1,19 @@
-/* eslint-disable react/forbid-prop-types */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { View, SafeAreaView } from 'react-native';
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
 import { connectStyle } from 'native-base-shoutem-theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
 
-class Footer extends React.Component {
-  constructor(props) {
-    super(props);
-    this._root = null;
-  }
+class Footer extends Component {
+  static contextTypes = {
+    theme: PropTypes.object
+  };
 
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { style, theme, ...rest } = this.props;
+    const { style } = this.props;
 
     return (
       <SafeAreaView
@@ -24,13 +21,14 @@ class Footer extends React.Component {
           backgroundColor: getStyle(style).backgroundColor
         }}
       >
-        <View ref={c => (this._root = c)} {...rest} style={style} />
+        <View ref={c => (this._root = c)} {...this.props} />
       </SafeAreaView>
     );
   }
 }
 
 Footer.propTypes = {
+  ...ViewPropTypes,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,
@@ -43,5 +41,4 @@ const StyledFooter = connectStyle(
   {},
   mapPropsToStyleNames
 )(Footer);
-
 export { StyledFooter as Footer };

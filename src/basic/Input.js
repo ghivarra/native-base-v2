@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextInput } from 'react-native';
@@ -8,63 +7,43 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
 
 import NativeBaseComponent from './Base/NativeBaseComponent';
+import { TextInputPropTypes } from 'deprecated-react-native-prop-types';
 
 class Input extends NativeBaseComponent {
-  constructor(props) {
-    super(props);
-    this._root = null;
-    this._textInput = null;
-  }
-
-  getVariables() {
-    if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables) {
-      return this.props.theme['@@shoutem.theme/themeStyle'].variables
-    }
-    return variable
-  }
-
   render() {
-    const {
-      disabled,
-      placeholderTextColor,
-      // eslint-disable-next-line no-unused-vars
-      theme,
-      ...rest
-    } = this.props;
-
-    const variables = this.getVariables();
-
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
     return (
       <TextInput
         ref={c => {
           this._textInput = c;
           this._root = c;
         }}
-        editable={!disabled}
+        editable={!this.props.disabled}
         underlineColorAndroid="rgba(0,0,0,0)"
         placeholderTextColor={
-          placeholderTextColor || variables.inputColorPlaceholder
+          this.props.placeholderTextColor
+            ? this.props.placeholderTextColor
+            : variables.inputColorPlaceholder
         }
-        {...rest}
+        {...this.props}
       />
     );
   }
 }
 
 Input.propTypes = {
+  ...TextInputPropTypes,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,
     PropTypes.array
-  ]),
-  disabled: PropTypes.bool,
-  theme: PropTypes.shape({})
+  ])
 };
 
-const StyledInput = connectStyle(
-  'NativeBase.Input',
-  {},
-  mapPropsToStyleNames
-)(Input);
+const StyledInput = connectStyle('NativeBase.Input', {}, mapPropsToStyleNames)(
+  Input
+);
 
 export { StyledInput as Input };

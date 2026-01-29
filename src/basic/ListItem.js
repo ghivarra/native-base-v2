@@ -1,5 +1,4 @@
-/* eslint-disable react/forbid-prop-types */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   TouchableHighlight,
@@ -13,65 +12,46 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
 import { TouchableHighlightProps } from '../utils/TouchableHighlightProps';
 
-class ListItem extends React.Component {
-  constructor(props) {
-    super(props);
-    this._root = null;
-  }
-
-  getVariables() {
-    if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables) {
-      return this.props.theme['@@shoutem.theme/themeStyle'].variables
-    }
-    return variable
-  }
-
+class ListItem extends Component {
+  static contextTypes = {
+    theme: PropTypes.object
+  };
   render() {
-    const {
-      children,
-      onPress,
-      onLongPress,
-      touchableHighlightStyle,
-      // eslint-disable-next-line no-unused-vars
-      theme,
-      ...rest
-    } = this.props;
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
 
-    const variables = this.getVariables();
-
-    const useHighlight =
+    if (
       Platform.OS === 'ios' ||
       Platform.OS === 'web' ||
       variables.androidRipple === false ||
-      (!onPress && !onLongPress) ||
-      Platform.Version <= 21;
-
-    if (useHighlight) {
+      (!this.props.onPress && !this.props.onLongPress) ||
+      Platform.Version <= 21
+    ) {
       return (
         <TouchableHighlight
+          onPress={this.props.onPress}
+          onLongPress={this.props.onLongPress}
           ref={c => (this._root = c)}
-          onPress={onPress}
-          onLongPress={onLongPress}
           underlayColor={variables.listBtnUnderlayColor}
-          style={touchableHighlightStyle}
+          {...this.props}
+          style={this.props.touchableHighlightStyle}
         >
-          <View {...rest} testID={undefined}>
-            {children}
+          <View {...this.props} testID={undefined}>
+            {this.props.children}
           </View>
         </TouchableHighlight>
       );
     }
-
     return (
       <TouchableNativeFeedback
         ref={c => (this._root = c)}
         useForeground
-        onPress={onPress}
-        onLongPress={onLongPress}
+        {...this.props}
       >
         <View style={{ marginLeft: -17, paddingLeft: 17 }}>
-          <View {...rest} testID={undefined}>
-            {children}
+          <View {...this.props} testID={undefined}>
+            {this.props.children}
           </View>
         </View>
       </TouchableNativeFeedback>
@@ -91,8 +71,7 @@ ListItem.propTypes = {
     PropTypes.array
   ]),
   itemDivider: PropTypes.bool,
-  button: PropTypes.bool,
-  theme: PropTypes.shape({})
+  button: PropTypes.bool
 };
 
 const StyledListItem = connectStyle(

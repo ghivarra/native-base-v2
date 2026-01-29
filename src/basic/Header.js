@@ -1,26 +1,19 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unneeded-ternary */
-/* eslint-disable react/forbid-prop-types */
 import { connectStyle } from 'native-base-shoutem-theme';
 import PropTypes from 'prop-types';
-import React from 'react';
-import { View, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { Component } from 'react';
+import { View, StatusBar, SafeAreaView } from 'react-native';
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
 import variable from '../theme/variables/platform';
 
-class Header extends React.Component {
-  constructor(props) {
-    super(props);
-    this._root = null;
-  }
-
-  getVariables() {
-    const themeVars = this.props.theme['@@shoutem.theme/themeStyle'].variables;
-    return themeVars || variable;
-  }
+class Header extends Component {
+  static contextTypes = {
+    theme: PropTypes.object
+  };
 
   render() {
     const {
@@ -28,13 +21,13 @@ class Header extends React.Component {
       iosBarStyle,
       style,
       transparent,
-      translucent,
-      // eslint-disable-next-line no-unused-vars
-      theme,
-      ...rest
+      translucent
     } = this.props;
 
-    const variables = this.getVariables();
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
+
     const platformStyle = variables.platformStyle;
 
     return (
@@ -59,7 +52,7 @@ class Header extends React.Component {
             backgroundColor: getStyle(style).backgroundColor
           }}
         >
-          <View ref={c => (this._root = c)} {...rest} style={style} />
+          <View ref={c => (this._root = c)} {...this.props} />
         </SafeAreaView>
       </View>
     );
@@ -67,6 +60,7 @@ class Header extends React.Component {
 }
 
 Header.propTypes = {
+  ...ViewPropTypes,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,
@@ -81,5 +75,4 @@ const StyledHeader = connectStyle(
   {},
   mapPropsToStyleNames
 )(Header);
-
 export { StyledHeader as Header };

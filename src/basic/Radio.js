@@ -1,5 +1,4 @@
-/* eslint-disable react/forbid-prop-types */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity, Platform } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
@@ -10,78 +9,70 @@ import variable from '../theme/variables/platform';
 import computeProps from '../utils/computeProps';
 import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
-class Radio extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this._root = null;
-  }
-
-  getVariables() {
-    if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables) {
-      return this.props.theme['@@shoutem.theme/themeStyle'].variables
-    }
-    return variable
-  }
-
+class Radio extends Component {
+  static contextTypes = {
+    theme: PropTypes.object
+  };
   prepareRootProps() {
     const defaultProps = {
       standardStyle: false
     };
+
     return computeProps(this.props, defaultProps);
   }
 
   render() {
-    const {
-      selected,
-      selectedColor,
-      color,
-      standardStyle,
-      // eslint-disable-next-line no-unused-vars
-      theme,
-      // eslint-disable-next-line no-unused-vars
-      ...rest
-    } = this.props;
-
-    const variables = this.getVariables();
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
 
     return (
       <TouchableOpacity
         ref={c => (this._root = c)}
         {...this.prepareRootProps()}
       >
-        {Platform.OS === 'ios' && !standardStyle ? (
-          selected ? (
+        {Platform.OS === 'ios' && !this.props.standardStyle ? (
+          this.props.selected && (
             <Icon
               style={{
-                color: selectedColor || variables.radioColor,
+                color: this.props.selectedColor
+                  ? this.props.selectedColor
+                  : variables.radioColor,
                 lineHeight: 25,
                 height: 20,
                 fontSize: variables.radioBtnSize
               }}
               name="ios-checkmark"
             />
-          ) : null
+          )
         ) : (
           <Icon
             style={{
               color:
                 Platform.OS === 'ios'
-                  ? selected
-                    ? selectedColor || variables.radioColor
-                    : color || undefined
-                  : selected
-                  ? selectedColor ||
-                    variables.radioSelectedColorAndroid
-                  : color || undefined,
+                  ? this.props.selected
+                    ? this.props.selectedColor
+                      ? this.props.selectedColor
+                      : variables.radioColor
+                    : this.props.color
+                    ? this.props.color
+                    : undefined
+                  : this.props.selected
+                  ? this.props.selectedColor
+                    ? this.props.selectedColor
+                    : variables.radioSelectedColorAndroid
+                  : this.props.color
+                  ? this.props.color
+                  : undefined,
               lineHeight: variables.radioBtnLineHeight,
               fontSize: variables.radioBtnSize
             }}
             name={
               Platform.OS === 'ios'
-                ? selected
+                ? this.props.selected
                   ? 'ios-radio-button-on'
                   : 'ios-radio-button-off'
-                : selected
+                : this.props.selected
                 ? 'md-radio-button-on'
                 : 'md-radio-button-off'
             }
@@ -95,14 +86,11 @@ class Radio extends React.PureComponent {
 Radio.propTypes = {
   ...TouchableOpacityProps,
   selected: PropTypes.bool,
-  standardStyle: PropTypes.bool,
-  theme: PropTypes.shape({})
+  standardStyle: PropTypes.bool
 };
 
-const StyledRadio = connectStyle(
-  'NativeBase.Radio',
-  {},
-  mapPropsToStyleNames
-)(Radio);
+const StyledRadio = connectStyle('NativeBase.Radio', {}, mapPropsToStyleNames)(
+  Radio
+);
 
 export { StyledRadio as Radio };

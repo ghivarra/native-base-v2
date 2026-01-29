@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
@@ -10,86 +9,82 @@ import { IconNB } from '../IconNB';
 
 import ic from './NBIcons.json';
 
+
 const IS_IOS = Platform.OS === 'ios';
 
-class Icon extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this._root = null;
-  }
 
-  setRoot = c => {
-    this._root = c;
+class Icon extends React.PureComponent {
+  static contextTypes = {
+    theme: PropTypes.object
   };
 
-  getVariables() {
-    if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables) {
-      return this.props.theme['@@shoutem.theme/themeStyle'].variables
-    }
-    return variable
+  setRoot(c){
+    this._root = c;
   }
 
   getName() {
-    const variables = this.getVariables();
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
     const platformStyle = variables.platformStyle;
 
     if ((this.props.type || variables.iconFamily) === 'Ionicons') {
       if (typeof ic[this.props.name] !== 'object') {
         return this.props.name;
       }
+      let name;
       if (IS_IOS && platformStyle !== 'material') {
-        return this.props.active
+        name = this.props.active
           ? ic[this.props.name].ios.active
           : ic[this.props.name].ios.default;
+      } else {
+        name = this.props.active
+          ? ic[this.props.name].android.active
+          : ic[this.props.name].android.default;
       }
-      return this.props.active
-        ? ic[this.props.name].android.active
-        : ic[this.props.name].android.default;
+      return name;
     }
     return this.props.name;
   }
 
   getIconName() {
     if (IS_IOS) {
-      if (this.props.ios) return this.props.ios;
+      if (this.props.ios) {
+        return this.props.ios;
+      }
       return this.props.active
         ? ic[this.props.name].ios.active
         : ic[this.props.name].ios.default;
+    } else if (this.props.android) {
+      return this.props.android;
     }
-    if (this.props.android) return this.props.android;
     return this.props.active
       ? ic[this.props.name].android.active
       : ic[this.props.name].android.default;
   }
 
   render() {
-    // eslint-disable-next-line no-unused-vars
-    const { ios, android, name, theme, ...rest } = this.props;
-
-    if (ios && android) {
+    if (this.props.ios && this.props.android) {
       return (
         <IconNB
           ref={this.setRoot}
-          {...rest}
-          name={IS_IOS ? ios : android}
+          {...this.props}
+          name={IS_IOS ? this.props.ios : this.props.android}
         />
       );
-    }
-
-    if (name && (android || ios)) {
+    } else if (this.props.name && (this.props.android || this.props.ios)) {
       return (
         <IconNB
           ref={this.setRoot}
-          {...rest}
+          {...this.props}
           name={this.getIconName()}
         />
       );
     }
-
     return (
       <IconNB
         ref={this.setRoot}
-        {...rest}
+        {...this.props}
         name={this.getName()}
       />
     );
@@ -107,14 +102,11 @@ Icon.propTypes = {
   ios: PropTypes.string,
   android: PropTypes.string,
   active: PropTypes.bool,
-  type: PropTypes.string,
-  theme: PropTypes.shape({})
+  type: PropTypes.string
 };
 
-const StyledIcon = connectStyle(
-  'NativeBase.Icon',
-  {},
-  mapPropsToStyleNames
-)(Icon);
+const StyledIcon = connectStyle('NativeBase.Icon', {}, mapPropsToStyleNames)(
+  Icon
+);
 
 export { StyledIcon as Icon };

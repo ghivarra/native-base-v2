@@ -1,5 +1,4 @@
-/* eslint-disable react/forbid-prop-types */
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
@@ -7,41 +6,26 @@ import { connectStyle } from 'native-base-shoutem-theme';
 import variable from '../theme/variables/platform';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 
-class Spinner extends React.Component {
-  constructor(props) {
-    super(props);
-    this._root = null;
-  }
-
-  getVariables() {
-    if (this.props && this.props.theme && this.props.theme['@@shoutem.theme/themeStyle'] && this.props.theme['@@shoutem.theme/themeStyle'].variables) {
-      return this.props.theme['@@shoutem.theme/themeStyle'].variables
-    }
-    return variable
-  }
-
+class Spinner extends Component {
+  static contextTypes = {
+    theme: PropTypes.object
+  };
   render() {
-    const {
-      color,
-      inverse,
-      size,
-      // eslint-disable-next-line no-unused-vars
-      theme,
-      ...rest
-    } = this.props;
-
-    const variables = this.getVariables();
-
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
     return (
       <ActivityIndicator
         ref={c => (this._root = c)}
-        {...rest}
+        {...this.props}
         color={
-          color || inverse
+          this.props.color
+            ? this.props.color
+            : this.props.inverse
             ? variables.inverseSpinnerColor
             : variables.defaultSpinnerColor
         }
-        size={size || 'large'}
+        size={this.props.size ? this.props.size : 'large'}
       />
     );
   }
@@ -50,13 +34,9 @@ class Spinner extends React.Component {
 Spinner.propTypes = {
   animating: PropTypes.bool,
   hidesWhenStopped: PropTypes.bool,
-  size: PropTypes.oneOfType([
-    PropTypes.oneOf(['small', 'large']),
-    PropTypes.number
-  ]),
+  size: PropTypes.oneOfType([PropTypes.oneOf(["small", "large"])], PropTypes.number),
   color: PropTypes.string,
-  inverse: PropTypes.bool,
-  theme: PropTypes.shape({})
+  inverse: PropTypes.bool
 };
 
 const StyledSpinner = connectStyle(

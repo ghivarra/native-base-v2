@@ -1,5 +1,4 @@
 /* eslint-disable react/prefer-stateless-function */
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import {
   Animated,
@@ -21,7 +20,7 @@ const styles = StyleSheet.create({
   }
 });
 
-class DefaultHeader extends React.PureComponent {
+class DefaultHeader extends React.Component {
   render() {
     const {
       disable,
@@ -31,12 +30,11 @@ class DefaultHeader extends React.PureComponent {
       headerStyle,
       icon,
       iconStyle,
-      title,
-      theme
+      title
     } = this.props;
-    
-    const variables = (theme && theme['@@shoutem.theme/themeStyle'] && theme['@@shoutem.theme/themeStyle'].variables) ? theme['@@shoutem.theme/themeStyle'].variables.variables : variable;
-
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
     return (
       <View
         style={[
@@ -45,6 +43,7 @@ class DefaultHeader extends React.PureComponent {
         ]}
       >
         <Text style={{ color: disable ? variable.disableRow : null }}>
+          {' '}
           {title}
         </Text>
         <Icon
@@ -67,11 +66,12 @@ class DefaultHeader extends React.PureComponent {
   }
 }
 
-class DefaultContent extends React.PureComponent {
+class DefaultContent extends React.Component {
   render() {
-    const { content, contentStyle, theme } = this.props;
-    const variables = (theme && theme['@@shoutem.theme/themeStyle'] && theme['@@shoutem.theme/themeStyle'].variables) ? theme['@@shoutem.theme/themeStyle'].variables.variables : variable;
-
+    const { content, contentStyle } = this.props;
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
     return (
       <Text
         style={[
@@ -85,14 +85,10 @@ class DefaultContent extends React.PureComponent {
   }
 }
 
-class AccordionSubItem extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      fadeAnim: new Animated.Value(0.3)
-    };
-  }
-
+class AccordionSubItem extends React.Component {
+  state = {
+    fadeAnim: new Animated.Value(0.3)
+  };
   componentDidMount() {
     Animated.timing(this.state.fadeAnim, {
       toValue: 1,
@@ -100,20 +96,18 @@ class AccordionSubItem extends React.PureComponent {
       useNativeDriver: true
     }).start();
   }
-
   render() {
     const { children, style } = this.props;
     const { fadeAnim } = this.state;
-
     return (
-      <Animated.View style={[style, { opacity: fadeAnim }]}>
+      <Animated.View style={{ ...style, opacity: fadeAnim }}>
         {children}
       </Animated.View>
     );
   }
 }
 
-class AccordionItem extends React.PureComponent {
+class AccordionItem extends React.Component {
   render() {
     const {
       contentStyle,
@@ -130,10 +124,8 @@ class AccordionItem extends React.PureComponent {
       onAccordionOpen,
       renderContent,
       renderHeader,
-      setSelected,
-      theme
+      setSelected
     } = this.props;
-
     return (
       <View>
         <TouchableWithoutFeedback
@@ -156,8 +148,6 @@ class AccordionItem extends React.PureComponent {
                 iconStyle={iconStyle}
                 expandedIcon={expandedIcon}
                 expandedIconStyle={expandedIconStyle}
-                title={item.title}
-                theme={theme}
               />
             )}
           </View>
@@ -170,7 +160,6 @@ class AccordionItem extends React.PureComponent {
               <DefaultContent
                 content={item.content}
                 contentStyle={contentStyle}
-                theme={theme}
               />
             )}
           </AccordionSubItem>
@@ -180,34 +169,33 @@ class AccordionItem extends React.PureComponent {
   }
 }
 
-export class Accordion extends React.PureComponent {
+export class Accordion extends React.Component {
   constructor(props) {
     super(props);
-    const { expanded, expandMultiple } = props;
-    let selected = [];
 
+    const { expanded, expandMultiple } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    let selected;
     if (expanded !== undefined && expanded !== null) {
       selected = Array.isArray(expanded) ? expanded : [expanded];
       selected = expandMultiple ? selected : selected.slice(0, 1);
     }
-
     this.state = {
-      selected
+      selected: props.expanded
     };
   }
 
-  setSelected = index => {
+  setSelected(index) {
     const { expandMultiple } = this.props;
-    const selected = [...this.state.selected];
-
-    const i = selected.indexOf(index);
-    if (i !== -1) {
-      selected.splice(i, 1);
+    const selected = this.state.selected.slice();
+    if (selected.indexOf(index) !== -1) {
+      selected.splice(selected.indexOf(index), 1);
       this.setState({ selected });
     } else {
-      this.setState({ selected: expandMultiple ? [...selected, index] : [index] });
+      selected.push(index);
+      this.setState({ selected: expandMultiple ? selected : [index] });
     }
-  };
+  }
 
   render() {
     const {
@@ -223,12 +211,11 @@ export class Accordion extends React.PureComponent {
       onAccordionOpen,
       renderContent,
       renderHeader,
-      style,
-      theme
+      style
     } = this.props;
-
-    const variables = (theme && theme['@@shoutem.theme/themeStyle'] && theme['@@shoutem.theme/themeStyle'].variables) ? theme['@@shoutem.theme/themeStyle'].variables.variables : variable;
-
+    const variables = this.context.theme
+      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
+      : variable;
     return (
       <FlatList
         data={dataArray}
@@ -240,14 +227,15 @@ export class Accordion extends React.PureComponent {
           },
           style
         ]}
-        keyExtractor={(_, index) => String(index)}
+        keyExtractor={(item, index) => String(index)}
         renderItem={({ item, index }) => (
           <AccordionItem
             disable={disable === index}
+            key={String(index)}
             item={item}
-            expanded={this.state.selected.includes(index)}
+            expanded={this.state.selected.indexOf(index) !== -1}
             index={index}
-            setSelected={this.setSelected}
+            setSelected={i => this.setSelected(i)}
             headerStyle={headerStyle}
             contentStyle={contentStyle}
             renderHeader={renderHeader}
@@ -258,9 +246,9 @@ export class Accordion extends React.PureComponent {
             expandedIconStyle={expandedIconStyle}
             onAccordionOpen={onAccordionOpen}
             onAccordionClose={onAccordionClose}
-            theme={theme}
           />
         )}
+        {...this.props}
       />
     );
   }
