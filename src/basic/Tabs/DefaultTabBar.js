@@ -1,16 +1,18 @@
-import React, { Component } from 'react';
+/* eslint-disable react/forbid-prop-types */
+import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
-import { connectStyle, StyleProvider } from 'native-base-shoutem-theme';
+import { connectStyle } from 'native-base-shoutem-theme';
+
 import mapPropsToStyleNames from '../../utils/mapPropsToStyleNames';
 import variable from './../../theme/variables/platform';
 import { TabHeading } from '../TabHeading';
 import { Text } from '../Text';
 import { TabContainer } from '../TabContainer';
-const ReactNative = require('react-native');
 
-const { StyleSheet, View, Animated, Platform } = ReactNative;
+const ReactNative = require('react-native');
+const { View, Animated } = ReactNative;
 const Button = require('./Button');
 
 const DefaultTabBar = createReactClass({
@@ -22,21 +24,19 @@ const DefaultTabBar = createReactClass({
     activeTextColor: PropTypes.string,
     inactiveTextColor: PropTypes.string,
     disabledTextColor: PropTypes.string,
-    tabStyle: PropTypes.shape({
-      style: PropTypes.any,
-    }),
-    renderTab: PropTypes.func,
-    underlineStyle: PropTypes.shape({
-      style: PropTypes.any,
-    }),
-    tabContainerStyle: PropTypes.shape({
-      style: PropTypes.any,
-    }),
+    tabStyle: PropTypes.array,
+    activeTabStyle: PropTypes.array,
+    textStyle: PropTypes.array,
+    activeTextStyle: PropTypes.array,
+    tabHeaderStyle: PropTypes.array,
+    underlineStyle: PropTypes.any,
+    tabContainerStyle: PropTypes.any,
     accessible: PropTypes.array,
-    accessibilityLabel: PropTypes.array
-  },
-  contextTypes: {
-    theme: PropTypes.object
+    accessibilityLabel: PropTypes.array,
+    disabled: PropTypes.array,
+    containerWidth: PropTypes.number,
+    scrollValue: PropTypes.object,
+    renderTab: PropTypes.func
   },
 
   getDefaultProps() {
@@ -45,11 +45,23 @@ const DefaultTabBar = createReactClass({
       inactiveTextColor: variable.topTabBarTextColor,
       disabledTextColor: variable.tabBarDisabledTextColor,
       backgroundColor: 'transparent',
-      tabFontSize: variable.tabFontSize
+      tabFontSize: variable.tabFontSize,
+      tabStyle: [],
+      activeTabStyle: [],
+      textStyle: [],
+      activeTextStyle: [],
+      tabHeaderStyle: [],
+      disabled: [],
+      accessible: [],
+      accessibilityLabel: []
     };
   },
 
-  renderTabOption(name, page) {},
+  getVariables(props) {
+    const themeVars =
+      props?.theme?.['@@shoutem.theme/themeStyle']?.variables;
+    return themeVars || variable;
+  },
 
   renderTab(
     name,
@@ -70,20 +82,23 @@ const DefaultTabBar = createReactClass({
     const headerContent =
       typeof name !== 'string' ? name.props.children : undefined;
     const { activeTextColor, inactiveTextColor } = this.props;
-    const fontWeight = isTabActive ? 'bold' : 'normal';
+
     const isDisabled = !!disabled;
     let textColor;
+
     if (isDisabled) {
       textColor = disabledTextColor;
     } else if (isTabActive) {
-      textColor = activeTextStyle ? activeTextStyle.color : activeTextColor; // activeTextColor: default color for active Tab
+      textColor = activeTextStyle?.color || activeTextColor;
     } else {
-      textColor = textStyle ? textStyle.color : inactiveTextColor; // inactiveTextColor: default color for inactive Tab
+      textColor = textStyle?.color || inactiveTextColor;
     }
+
     const accessibilityState = {
-      disabled: isDisabled ? true : false,
-      selected: isTabActive ? true : false,
+      disabled: isDisabled,
+      selected: isTabActive
     };
+
     if (typeof name === 'string') {
       return (
         <Button
@@ -91,7 +106,7 @@ const DefaultTabBar = createReactClass({
           disabled={isDisabled}
           key={name}
           accessible={accessible}
-          accessibilityRole='tab'
+          accessibilityRole="tab"
           accessibilityLabel={accessibilityLabel}
           accessibilityState={accessibilityState}
           onPress={() => onPressHandler(page)}
@@ -113,13 +128,14 @@ const DefaultTabBar = createReactClass({
         </Button>
       );
     }
+
     return (
       <Button
         style={{ flex: 1 }}
         disabled={isDisabled}
-        key={_.random(1.2, 5.2)}
+        key={_.uniqueId('tab_')}
         accessible={accessible}
-        accessibilityRole='tab'
+        accessibilityRole="tab"
         accessibilityLabel={accessibilityLabel}
         accessibilityState={accessibilityState}
         onPress={() => onPressHandler(page)}
@@ -132,12 +148,10 @@ const DefaultTabBar = createReactClass({
   },
 
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
-    const platformStyle = variables.platformStyle;
+    const variables = this.getVariables(this.props);
     const containerWidth = this.props.containerWidth;
     const numberOfTabs = this.props.tabs.length;
+
     const tabUnderlineStyle = {
       position: 'absolute',
       width: containerWidth / numberOfTabs,
@@ -150,11 +164,12 @@ const DefaultTabBar = createReactClass({
       inputRange: [0, 1],
       outputRange: [0, containerWidth / numberOfTabs]
     });
+
     return (
       <TabContainer
         style={[
           { backgroundColor: variables.tabDefaultBg },
-          this.props.tabContainerStyle ? this.props.tabContainerStyle : {}
+          this.props.tabContainerStyle || {}
         ]}
       >
         {this.props.tabs.map((name, page) => {
@@ -185,10 +200,10 @@ const DefaultTabBar = createReactClass({
   }
 });
 
-// module.exports = DefaultTabBar;
 const StyledTab = connectStyle(
   'NativeBase.DefaultTabBar',
   {},
   mapPropsToStyleNames
 )(DefaultTabBar);
+
 export { StyledTab as DefaultTabBar };

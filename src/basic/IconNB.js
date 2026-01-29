@@ -1,7 +1,7 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connectStyle } from 'native-base-shoutem-theme';
-import { get } from 'lodash';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -23,107 +23,53 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 
 const Icomoon = createIconSetFromIcoMoon(icoMoonConfig);
 
-class IconNB extends React.PureComponent {
-  static contextTypes = {
-    theme: PropTypes.object,
-  };
+const ICON_MAP = {
+  AntDesign,
+  Entypo,
+  EvilIcons,
+  Feather,
+  FontAwesome,
+  FontAwesome5,
+  Fontisto,
+  Foundation,
+  Icomoon,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+  SimpleLineIcons,
+  Zocial
+};
 
+class IconNB extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.setIcon(props.type);
+    this._root = null;
   }
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillUpdate(nextProps) {
-    if (nextProps.type && this.props.type !== nextProps.type) {
-      this.setIcon(nextProps.type);
-    }
-  }
-
-  setRoot(c){
+  setRoot = c => {
     this._root = c;
-  }
+  };
 
-  setIcon(iconType) {
-    if (iconType === undefined && get(this, 'context.theme')) {
-      // eslint-disable-next-line
-      iconType = this.context.theme['@@shoutem.theme/themeStyle'].variables
-        .iconFamily;
+  getIcon(type) {
+    if (!type) {
+      const themeType = this.props.theme['@@shoutem.theme/themeStyle'].variables.iconFamily;
+      return ICON_MAP[themeType] || Ionicons;
     }
-    switch (iconType) {
-      case 'AntDesign':
-        this.Icon = AntDesign;
-        break;
-      case 'Entypo':
-        this.Icon = Entypo;
-        break;
-      case 'EvilIcons':
-        this.Icon = EvilIcons;
-        break;
-      case 'Feather':
-        this.Icon = Feather;
-        break;
-      case 'FontAwesome':
-        this.Icon = FontAwesome;
-        break;
-      case 'FontAwesome5':
-        this.Icon = FontAwesome5;
-        break;
-      case 'Fontisto':
-        this.Icon = Fontisto;
-        break;
-      case 'Foundation':
-        this.Icon = Foundation;
-        break;
-      case 'Icomoon':
-        this.Icon = Icomoon;
-        break;
-      case 'Ionicons':
-        this.Icon = Ionicons;
-        break;
-      case 'MaterialCommunityIcons':
-        this.Icon = MaterialCommunityIcons;
-        break;
-      case 'MaterialIcons':
-        this.Icon = MaterialIcons;
-        break;
-      case 'Octicons':
-        this.Icon = Octicons;
-        break;
-      case 'SimpleLineIcons':
-        this.Icon = SimpleLineIcons;
-        break;
-      case 'Zocial':
-        this.Icon = Zocial;
-        break;
-      default:
-        this.Icon = Ionicons;
-    }
+    return ICON_MAP[type] || Ionicons;
   }
 
   render() {
-    return <this.Icon ref={this.setRoot} {...this.props} />;
+    // eslint-disable-next-line no-unused-vars
+    const { type, theme, ...rest } = this.props;
+    const Icon = this.getIcon(type);
+    return <Icon ref={this.setRoot} {...rest} />;
   }
 }
 
 IconNB.propTypes = {
-  type: PropTypes.oneOf([
-    'AntDesign',
-    'Entypo',
-    'EvilIcons',
-    'Feather',
-    'FontAwesome',
-    'FontAwesome5',
-    'Fontisto',
-    'Foundation',
-    'Icomoon',
-    'Ionicons',
-    'MaterialCommunityIcons',
-    'MaterialIcons',
-    'Octicons',
-    'SimpleLineIcons',
-    'Zocial',
-  ]),
+  type: PropTypes.oneOf(Object.keys(ICON_MAP)),
+  theme: PropTypes.shape({})
 };
 
 const StyledIconNB = connectStyle(

@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+/* eslint-disable react/forbid-prop-types */
+import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 import IconNB from 'react-native-vector-icons/Ionicons';
@@ -10,13 +11,20 @@ import { PLATFORM } from '../theme/variables/commonColor';
 import computeProps from '../utils/computeProps';
 import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
-class CheckBox extends Component {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
+class CheckBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this._root = null;
+  }
+
+  getVariables() {
+    const themeVars = this.props.theme['@@shoutem.theme/themeStyle'].variables;
+    return themeVars || variable;
+  }
 
   getInitialStyle(variables) {
-    const { color, checked, checkboxType, borderColor } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { color, checked, checkboxType, borderColor, theme } = this.props;
     return {
       checkStyle: {
         borderRadius: this.getBorderRadius(checkboxType, variables),
@@ -31,12 +39,8 @@ class CheckBox extends Component {
 
   // eslint-disable-next-line class-methods-use-this
   getBorderRadius(checkboxType, variables) {
-    if (checkboxType === 'rounded') {
-      return 13;
-    }
-    if (checkboxType === 'square') {
-      return 0;
-    }
+    if (checkboxType === 'rounded') return 13;
+    if (checkboxType === 'square') return 0;
     return variables.CheckboxRadius;
   }
 
@@ -44,16 +48,15 @@ class CheckBox extends Component {
     const defaultProps = {
       style: this.getInitialStyle(variables).checkStyle
     };
-
     return computeProps(this.props, defaultProps);
   }
+
   render() {
     const { checked, tickColor } = this.props;
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const variables = this.getVariables();
     const platformStyle = variables.platformStyle;
     const platform = variables.platform;
+
     return (
       <TouchableOpacity
         ref={c => (this._root = c)}
@@ -83,6 +86,7 @@ class CheckBox extends Component {
 
 CheckBox.propTypes = {
   ...TouchableOpacityProps,
+  theme: PropTypes.shape({}),
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

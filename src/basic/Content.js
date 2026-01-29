@@ -1,17 +1,25 @@
+/* eslint-disable react/forbid-prop-types */
 import { connectStyle } from 'native-base-shoutem-theme';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import variable from '../theme/variables/platform';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
-import { SafeAreaView } from "react-native-safe-area-context"
 
-class Content extends PureComponent {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
+class Content extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this._root = null;
+    this._scrollview = null;
+  }
+
+  getVariables() {
+    const themeVars = this.props.theme['@@shoutem.theme/themeStyle'].variables;
+    return themeVars || variable;
+  }
 
   render() {
     const {
@@ -20,21 +28,23 @@ class Content extends PureComponent {
       disableKBDismissScroll,
       keyboardShouldPersistTaps,
       padder,
-      style
+      style,
+      // eslint-disable-next-line no-unused-vars
+      theme,
+      ...rest
     } = this.props;
+
+    const variables = this.getVariables();
 
     const containerStyle = {
       flex: 1,
       backgroundColor: getStyle(style).backgroundColor
     };
 
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
-
     return (
       <SafeAreaView style={containerStyle}>
         <KeyboardAwareScrollView
+          {...rest}
           automaticallyAdjustContentInsets={false}
           resetScrollToCoords={disableKBDismissScroll ? null : { x: 0, y: 0 }}
           keyboardShouldPersistTaps={keyboardShouldPersistTaps || 'handled'}
@@ -42,7 +52,6 @@ class Content extends PureComponent {
             this._scrollview = c;
             this._root = c;
           }}
-          {...this.props}
           contentContainerStyle={[
             { padding: padder ? variables.contentPadding : undefined },
             contentContainerStyle
@@ -59,6 +68,7 @@ Content.propTypes = {
   disableKBDismissScroll: PropTypes.bool,
   keyboardShouldPersistTaps: PropTypes.string,
   padder: PropTypes.bool,
+  theme: PropTypes.shape({}),
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,

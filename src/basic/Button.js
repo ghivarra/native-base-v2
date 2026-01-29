@@ -17,14 +17,28 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import { Text } from './Text';
 import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
+const styles = StyleSheet.create({
+  childContainer: {
+    flexShrink: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 class Button extends React.PureComponent {
-  static contextTypes = {
-    theme: PropTypes.object
+  constructor(props) {
+    super(props);
+    this._root = null;
+  }
+
+  setRoot = c => {
+    this._root = c;
   };
 
-  setRoot(c){
-    this._root = c;
+  getVariables() {
+    const theme = this.props.theme['@@shoutem.theme/themeStyle'].variables;
+    return theme || variable;
   }
 
   getInitialStyle() {
@@ -42,20 +56,18 @@ class Button extends React.PureComponent {
   }
 
   prepareRootProps() {
-
-    const {style, ...others} = this.props;
-
+    // eslint-disable-next-line no-unused-vars
+    const { style, theme, ...others } = this.props;
     return {
-      style: StyleSheet.flatten(StyleSheet.compose(this.getInitialStyle().borderedBtn, style)),
-      ...others
-    }
-
+      ...others,
+      style: StyleSheet.flatten(
+        StyleSheet.compose(this.getInitialStyle().borderedBtn, style)
+      )
+    };
   }
 
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const variables = this.getVariables();
 
     const children =
       Platform.OS === PLATFORM.IOS || !variables.buttonUppercaseAndroidText
@@ -63,9 +75,11 @@ class Button extends React.PureComponent {
         : React.Children.map(this.props.children, child =>
             child && child.type === Text
               ? React.cloneElement(child, {
-                uppercase: this.props.buttonUppercaseAndroidText === false
-                ? false : variables.buttonUppercaseAndroidText,
-                ...child.props
+                ...child.props,
+                uppercase:
+                    this.props.buttonUppercaseAndroidText === false
+                      ? false
+                      : variables.buttonUppercaseAndroidText
               })
               : child
           );
@@ -92,12 +106,14 @@ class Button extends React.PureComponent {
         </TouchableOpacity>
       );
     }
+
     if (this.props.rounded) {
       const buttonStyle = { ...rootProps.style };
       const buttonFlex =
         this.props.full || this.props.block
           ? variable.buttonDefaultFlex
           : buttonStyle.flex;
+
       return (
         <View
           style={[
@@ -108,15 +124,14 @@ class Button extends React.PureComponent {
         >
           <TouchableNativeFeedback
             ref={this.setRoot}
+            onPress={this.props.onPress}
             background={TouchableNativeFeedback.Ripple(
               this.props.androidRippleColor || variables.androidRippleColor,
               true
             )}
-            {...rootProps}
           >
             <View
               style={[
-                // eslint-disable-next-line no-use-before-define
                 styles.childContainer,
                 {
                   paddingTop: buttonStyle.paddingTop,
@@ -132,6 +147,7 @@ class Button extends React.PureComponent {
         </View>
       );
     }
+
     return (
       <TouchableNativeFeedback
         ref={this.setRoot}
@@ -144,7 +160,6 @@ class Button extends React.PureComponent {
                 false
               )
         }
-        {...rootProps}
       >
         <View {...rootProps}>{children}</View>
       </TouchableNativeFeedback>
@@ -154,6 +169,8 @@ class Button extends React.PureComponent {
 
 Button.propTypes = {
   ...TouchableOpacityProps,
+  // eslint-disable-next-line react/forbid-prop-types
+  theme: PropTypes.object,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.number,
@@ -174,18 +191,10 @@ Button.propTypes = {
   active: PropTypes.bool
 };
 
-const styles = StyleSheet.create({
-  childContainer: {
-    flexShrink: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
-
 const StyledButton = connectStyle(
   'NativeBase.Button',
   {},
   mapPropsToStyleNames
 )(Button);
+
 export { StyledButton as Button };
