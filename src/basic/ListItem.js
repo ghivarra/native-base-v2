@@ -13,13 +13,9 @@ import variable from '../theme/variables/platform';
 import { TouchableHighlightProps } from '../utils/TouchableHighlightProps';
 
 class ListItem extends Component {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme, ...otherProps } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
 
     if (
       Platform.OS === 'ios' ||
@@ -34,10 +30,10 @@ class ListItem extends Component {
           onLongPress={this.props.onLongPress}
           ref={c => (this._root = c)}
           underlayColor={variables.listBtnUnderlayColor}
-          {...this.props}
+          {...otherProps}
           style={this.props.touchableHighlightStyle}
         >
-          <View {...this.props} testID={undefined}>
+          <View {...otherProps} testID={undefined}>
             {this.props.children}
           </View>
         </TouchableHighlight>
@@ -47,10 +43,10 @@ class ListItem extends Component {
       <TouchableNativeFeedback
         ref={c => (this._root = c)}
         useForeground
-        {...this.props}
+        {...otherProps}
       >
         <View style={{ marginLeft: -17, paddingLeft: 17 }}>
-          <View {...this.props} testID={undefined}>
+          <View {...otherProps} testID={undefined}>
             {this.props.children}
           </View>
         </View>

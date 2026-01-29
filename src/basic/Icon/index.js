@@ -23,9 +23,8 @@ class Icon extends React.PureComponent {
   }
 
   getName() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     const platformStyle = variables.platformStyle;
 
     if ((this.props.type || variables.iconFamily) === 'Ionicons') {
@@ -64,11 +63,14 @@ class Icon extends React.PureComponent {
   }
 
   render() {
+    // eslint-disable-next-line no-unused-vars
+    const { theme, ...otherProps } = this.props
+
     if (this.props.ios && this.props.android) {
       return (
         <IconNB
           ref={this.setRoot}
-          {...this.props}
+          {...otherProps}
           name={IS_IOS ? this.props.ios : this.props.android}
         />
       );
@@ -76,7 +78,7 @@ class Icon extends React.PureComponent {
       return (
         <IconNB
           ref={this.setRoot}
-          {...this.props}
+          {...otherProps}
           name={this.getIconName()}
         />
       );
@@ -84,7 +86,7 @@ class Icon extends React.PureComponent {
     return (
       <IconNB
         ref={this.setRoot}
-        {...this.props}
+        {...otherProps}
         name={this.getName()}
       />
     );

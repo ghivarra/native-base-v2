@@ -11,10 +11,6 @@ import computeProps from '../utils/computeProps';
 import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 class CheckBox extends Component {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
-
   getInitialStyle(variables) {
     const { color, checked, checkboxType, borderColor } = this.props;
     return {
@@ -48,10 +44,8 @@ class CheckBox extends Component {
     return computeProps(this.props, defaultProps);
   }
   render() {
-    const { checked, tickColor } = this.props;
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { checked, tickColor, theme } = this.props;
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     const platformStyle = variables.platformStyle;
     const platform = variables.platform;
     return (

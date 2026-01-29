@@ -11,13 +11,13 @@ class Spinner extends Component {
     theme: PropTypes.object
   };
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme, ...otherProps } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
+
     return (
       <ActivityIndicator
         ref={c => (this._root = c)}
-        {...this.props}
+        {...otherProps}
         color={
           this.props.color
             ? this.props.color

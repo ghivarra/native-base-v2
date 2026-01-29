@@ -132,9 +132,8 @@ const DefaultTabBar = createReactClass({
   },
 
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     const platformStyle = variables.platformStyle;
     const containerWidth = this.props.containerWidth;
     const numberOfTabs = this.props.tabs.length;

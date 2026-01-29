@@ -22,9 +22,8 @@ class Radio extends Component {
   }
 
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
 
     return (
       <TouchableOpacity

@@ -30,11 +30,10 @@ class DefaultHeader extends React.Component {
       headerStyle,
       icon,
       iconStyle,
-      title
+      title,
+      theme
     } = this.props;
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     return (
       <View
         style={[
@@ -68,10 +67,8 @@ class DefaultHeader extends React.Component {
 
 class DefaultContent extends React.Component {
   render() {
-    const { content, contentStyle } = this.props;
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { content, contentStyle, theme } = this.props;
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     return (
       <Text
         style={[
@@ -211,11 +208,10 @@ export class Accordion extends React.Component {
       onAccordionOpen,
       renderContent,
       renderHeader,
-      style
+      style,
+      theme
     } = this.props;
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     return (
       <FlatList
         data={dataArray}

@@ -3,8 +3,9 @@
 import { connectStyle } from 'native-base-shoutem-theme';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View, StatusBar, SafeAreaView } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
@@ -24,9 +25,8 @@ class Header extends Component {
       translucent
     } = this.props;
 
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme, ...otherProps } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
 
     const platformStyle = variables.platformStyle;
 
@@ -52,7 +52,7 @@ class Header extends Component {
             backgroundColor: getStyle(style).backgroundColor
           }}
         >
-          <View ref={c => (this._root = c)} {...this.props} />
+          <View ref={c => (this._root = c)} {...otherProps} />
         </SafeAreaView>
       </View>
     );

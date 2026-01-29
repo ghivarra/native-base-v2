@@ -19,10 +19,6 @@ import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 
 class Button extends React.PureComponent {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
-
   setRoot(c){
     this._root = c;
   }
@@ -43,7 +39,8 @@ class Button extends React.PureComponent {
 
   prepareRootProps() {
 
-    const {style, ...others} = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const {style, theme, ...others} = this.props;
 
     return {
       style: StyleSheet.flatten(StyleSheet.compose(this.getInitialStyle().borderedBtn, style)),
@@ -53,9 +50,8 @@ class Button extends React.PureComponent {
   }
 
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
 
     const children =
       Platform.OS === PLATFORM.IOS || !variables.buttonUppercaseAndroidText

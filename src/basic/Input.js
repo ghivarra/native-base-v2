@@ -2,18 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TextInput } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
+import { TextInputPropTypes } from 'deprecated-react-native-prop-types';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import variable from '../theme/variables/platform';
 
 import NativeBaseComponent from './Base/NativeBaseComponent';
-import { TextInputPropTypes } from 'deprecated-react-native-prop-types';
 
 class Input extends NativeBaseComponent {
   render() {
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme, ...otherProps } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     return (
       <TextInput
         ref={c => {
@@ -27,7 +26,7 @@ class Input extends NativeBaseComponent {
             ? this.props.placeholderTextColor
             : variables.inputColorPlaceholder
         }
-        {...this.props}
+        {...otherProps}
       />
     );
   }

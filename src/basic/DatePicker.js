@@ -52,12 +52,10 @@ export class DatePicker extends React.Component {
       placeHolderText,
       placeHolderTextStyle,
       textStyle,
-      timeZoneOffsetInMinutes
+      timeZoneOffsetInMinutes,
     } = this.props;
-
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const {theme, ...otherProps} = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
 
     return (
       <View>
@@ -103,7 +101,7 @@ export class DatePicker extends React.Component {
                 mode="date"
                 locale={locale}
                 timeZoneOffsetInMinutes={timeZoneOffsetInMinutes}
-                {...this.props}
+                {...otherProps}
               />
             </Modal>
           </View>

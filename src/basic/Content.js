@@ -2,11 +2,11 @@ import { connectStyle } from 'native-base-shoutem-theme';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from "react-native-safe-area-context"
 
 import variable from '../theme/variables/platform';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
-import { SafeAreaView } from "react-native-safe-area-context"
 
 class Content extends PureComponent {
   static contextTypes = {
@@ -28,9 +28,8 @@ class Content extends PureComponent {
       backgroundColor: getStyle(style).backgroundColor
     };
 
-    const variables = this.context.theme
-      ? this.context.theme['@@shoutem.theme/themeStyle'].variables
-      : variable;
+    const { theme, ...otherProps } = this.props
+    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
 
     return (
       <SafeAreaView style={containerStyle}>
@@ -42,7 +41,7 @@ class Content extends PureComponent {
             this._scrollview = c;
             this._root = c;
           }}
-          {...this.props}
+          {...otherProps}
           contentContainerStyle={[
             { padding: padder ? variables.contentPadding : undefined },
             contentContainerStyle
