@@ -9,10 +9,6 @@ import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
 import getStyle from '../utils/getStyle';
 
 class Content extends PureComponent {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
-
   render() {
     const {
       children,

@@ -45,9 +45,6 @@ const ScrollableTabBar = createReactClass({
     }),
     onScroll: PropTypes.func
   },
-  contextTypes: {
-    theme: PropTypes.object
-  },
 
   getDefaultProps() {
     return {

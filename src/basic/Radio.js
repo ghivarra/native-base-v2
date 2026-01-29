@@ -10,9 +10,6 @@ import computeProps from '../utils/computeProps';
 import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
 
 class Radio extends Component {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
   prepareRootProps() {
     const defaultProps = {
       standardStyle: false

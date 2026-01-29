@@ -12,10 +12,6 @@ import getStyle from '../utils/getStyle';
 import variable from '../theme/variables/platform';
 
 class Header extends Component {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
-
   render() {
     const {
       androidStatusBarColor,

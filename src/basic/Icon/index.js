@@ -14,9 +14,6 @@ const IS_IOS = Platform.OS === 'ios';
 
 
 class Icon extends React.PureComponent {
-  static contextTypes = {
-    theme: PropTypes.object
-  };
 
   setRoot(c){
     this._root = c;
