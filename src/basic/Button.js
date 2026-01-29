@@ -60,11 +60,12 @@ class Button extends React.PureComponent {
   prepareRootProps() {
     // eslint-disable-next-line no-unused-vars
     const { style, theme, ...others } = this.props;
+
+    const initial = this.getInitialStyle().borderedBtn;
+
     return {
       ...others,
-      style: StyleSheet.flatten(
-        StyleSheet.compose(this.getInitialStyle().borderedBtn, style)
-      )
+      style: [initial, style]
     };
   }
 
@@ -110,7 +111,7 @@ class Button extends React.PureComponent {
     }
 
     if (this.props.rounded) {
-      const buttonStyle = { ...rootProps.style };
+      const buttonStyle = StyleSheet.flatten(rootProps.style);
       const buttonFlex =
         this.props.full || this.props.block
           ? variable.buttonDefaultFlex

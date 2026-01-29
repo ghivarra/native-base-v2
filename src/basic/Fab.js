@@ -4,10 +4,8 @@ import {
   Animated,
   TouchableOpacity,
   TouchableNativeFeedback,
-  View,
-  StyleSheet
-} from 'react-native';
-import { remove, merge, clone } from 'lodash';
+  View} from 'react-native';
+import { remove, clone } from 'lodash';
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import variables from '../theme/variables/platform';
@@ -72,6 +70,7 @@ class Fab extends Component {
 
   getOtherButtonStyle(child, i) {
     const { active, direction } = this.props;
+
     const type = {
       top: direction ? this.fabOtherBtns(direction, i).top : undefined,
       left: direction ? this.fabOtherBtns(direction, i).left : 8,
@@ -79,21 +78,19 @@ class Fab extends Component {
       bottom: direction
         ? this.fabOtherBtns(direction, i).bottom
         : active === false
-        ? Platform.OS === PLATFORM.IOS
-          ? 8
-          : 8
+        ? 8
         : i * 50 + 50
     };
 
-    return merge(
+    return [
       this.getInitialStyle().buttonStyle,
-      StyleSheet.flatten(child.props.style),
+      child.props.style,
       type
-    );
+    ];
   }
 
   getContainerStyle() {
-    return merge(this.getInitialStyle().container, this.props.containerStyle);
+    return [this.getInitialStyle().container, this.props.style];
   }
 
   getInitialStyle(iconStyle) {
@@ -148,9 +145,7 @@ class Fab extends Component {
         width: variables.fabButtonHeight,
         left: variables.fabButtonLeft,
         borderRadius: variables.fabButtonBorderRadius,
-        transform: this.state.active
-          ? [{ scale: new Animated.Value(1) }]
-          : [{ scale: this.buttonScale }],
+        transform: [{ scale: this.buttonScale }],
         marginBottom: variables.fabButtonMarginBottom,
         backgroundColor: variables.fabBackgroundColor
       }
@@ -254,9 +249,7 @@ class Fab extends Component {
   }
 
   prepareFabProps() {
-    const defaultProps = {
-      style: this.getInitialStyle().fab
-    };
+    const defaultProps = {};
     const incomingProps = clone(this.props);
     delete incomingProps.onPress;
 
@@ -468,8 +461,8 @@ class Fab extends Component {
         Platform.Version <= 21 ? (
           <TouchableOpacity
             onPress={() => this.fabOnPress()}
-            {...this.prepareFabProps()}
             activeOpacity={1}
+            style={[this.getInitialStyle().fab, this.props.style]}
           >
             {this.renderFab()}
           </TouchableOpacity>
