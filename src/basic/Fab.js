@@ -85,7 +85,7 @@ class Fab extends Component {
         : i * 50 + 50
     };
 
-    return merge(
+    return StyleSheet.flatten(
       this.getInitialStyle().buttonStyle,
       StyleSheet.flatten(child.props.style),
       type
@@ -483,7 +483,7 @@ class Fab extends Component {
             )}
             {...this.prepareFabProps()}
           >
-            <View style={[this.getInitialStyle().fab, style]}>
+            <View style={StyleSheet.flatten([this.getInitialStyle().fab, style])}>
               {this.renderFab()}
             </View>
           </TouchableNativeFeedback>

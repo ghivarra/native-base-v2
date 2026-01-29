@@ -36,17 +36,17 @@ class DefaultHeader extends React.Component {
     const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     return (
       <View
-        style={[
+        style={StyleSheet.flatten([
           styles.defaultHeader,
           headerStyle || { backgroundColor: variables.headerStyle }
-        ]}
+        ])}
       >
         <Text style={{ color: disable ? variable.disableRow : null }}>
           {' '}
           {title}
         </Text>
         <Icon
-          style={[
+          style={StyleSheet.flatten([
             { fontSize: variables.accordionIconFontSize },
             expanded
               ? expandedIcon && expandedIconStyle
@@ -55,7 +55,7 @@ class DefaultHeader extends React.Component {
               : icon && iconStyle
               ? iconStyle
               : { color: disable ? variable.disableRow : variables.iconStyle }
-          ]}
+          ])}
           name={
             expanded ? expandedIcon || 'ios-arrow-up' : icon || 'ios-arrow-down'
           }
@@ -71,10 +71,10 @@ class DefaultContent extends React.Component {
     const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
     return (
       <Text
-        style={[
+        style={StyleSheet.flatten([
           { padding: variable.accordionContentPadding },
           contentStyle || { backgroundColor: variables.contentStyle }
-        ]}
+        ])}
       >
         {content}
       </Text>
@@ -216,13 +216,13 @@ export class Accordion extends React.Component {
       <FlatList
         data={dataArray}
         extraData={this.state}
-        style={[
+        style={StyleSheet.flatten([
           {
             borderColor: variables.accordionBorderColor,
             borderWidth: variables.borderWidth
           },
           style
-        ]}
+        ])}
         keyExtractor={(item, index) => String(index)}
         renderItem={({ item, index }) => (
           <AccordionItem

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from "react-native-safe-area-context"
+import { StyleSheet } from 'react-native';
 
 import variable from '../theme/variables/platform';
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
@@ -38,10 +39,10 @@ class Content extends PureComponent {
             this._root = c;
           }}
           {...otherProps}
-          contentContainerStyle={[
+          contentContainerStyle={StyleSheet.flatten([
             { padding: padder ? variables.contentPadding : undefined },
             contentContainerStyle
-          ]}
+          ])}
         >
           {children}
         </KeyboardAwareScrollView>

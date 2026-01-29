@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View } from 'react-native';
+import { Modal, StyleSheet, View } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -62,13 +62,13 @@ export class DatePicker extends React.Component {
         <View>
           <Text
             onPress={() => (!disabled ? this.showDatePicker() : undefined)}
-            style={[
+            style={StyleSheet.flatten([
               {
                 padding: variables.datePickerPadding,
                 color: variables.datePickerTextColor
               },
               this.state.chosenDate ? textStyle : placeHolderTextStyle
-            ]}
+            ])}
           >
             {this.state.chosenDate
               ? this.formatChosenDate(this.state.chosenDate)

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Animated, PanResponder, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 import { connectStyle } from 'native-base-shoutem-theme';
 
 import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
@@ -222,7 +222,7 @@ class SwipeRow extends Component {
               {this.props.body}
             </ListItem>
           ) : (
-            <View style={[{ backgroundColor: '#FFF' }, this.props.style]}>
+            <View style={StyleSheet.flatten([{ backgroundColor: '#FFF' }, this.props.style])}>
               {this.props.body}
             </View>
           )}
@@ -243,7 +243,7 @@ class SwipeRow extends Component {
             {this.props.body}
           </ListItem>
         ) : (
-          <View style={[{ backgroundColor: '#FFF' }, this.props.style]}>
+          <View style={StyleSheet.flatten([{ backgroundColor: '#FFF' }, this.props.style])}>
             {this.props.body}
           </View>
         )}
@@ -255,7 +255,7 @@ class SwipeRow extends Component {
     return (
       <View style={this.props.style ? this.props.style : undefined}>
         <View
-          style={[
+          style={StyleSheet.flatten([
             styles.hidden,
             {
               height: this.state.hiddenHeight,
@@ -263,7 +263,7 @@ class SwipeRow extends Component {
               flexDirection: 'row',
               justifyContent: 'space-between'
             }
-          ]}
+          ])}
         >
           <Left style={{ width: this.props.leftOpenValue, zIndex: 1 }}>
             {this.props.left}

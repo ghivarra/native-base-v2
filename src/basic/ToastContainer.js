@@ -5,6 +5,7 @@ import {
   Platform,
   Animated,
   PanResponder,
+  StyleSheet,
 } from 'react-native';
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
 import { connectStyle } from 'native-base-shoutem-theme';
@@ -181,13 +182,13 @@ class ToastContainer extends Component {
       return (
         <Animated.View
           {...this.state.swipeDisabled ? {} : this._panResponder.panHandlers}
-          style={[
+          style={StyleSheet.flatten([
             this.getToastStyle(),
             { transform: [{ translateX: x }, { translateY: y }] },
-          ]}
+          ])}
         >
           <Toast
-            style={[this.state.style]}
+            style={StyleSheet.flatten([this.state.style])}
             danger={this.state.type === 'danger'}
             success={this.state.type === 'success'}
             warning={this.state.type === 'warning'}

@@ -342,7 +342,7 @@ const ScrollableTabView = createReactClass({
 
     return (
       <View
-        style={[styles.container, this.props.style]}
+        style={StyleSheet.flatten([styles.container, this.props.style])}
         onLayout={this._handleLayout}
       >
         {(this.props.tabBarPosition === 'top' ||

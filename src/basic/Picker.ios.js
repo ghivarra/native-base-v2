@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-import { FlatList, Modal, View } from 'react-native';
+import { FlatList, Modal, StyleSheet, View } from 'react-native';
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
 import { Picker } from '@react-native-picker/picker';
 import { connectStyle } from 'native-base-shoutem-theme';
@@ -120,7 +120,7 @@ class PickerNB extends Component {
       >
         {this.state.currentLabel ? (
           <Text
-            style={[this.props.textStyle]}
+            style={StyleSheet.flatten([this.props.textStyle])}
             note={this.props.note}
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -129,7 +129,7 @@ class PickerNB extends Component {
           </Text>
         ) : (
           <Text
-            style={[this.props.textStyle, this.props.placeholderStyle]}
+            style={StyleSheet.flatten([this.props.textStyle, this.props.placeholderStyle])}
             note={this.props.note !== false}
             numberOfLines={1}
             ellipsizeMode="tail"

@@ -186,10 +186,10 @@ const ScrollableTabBar = createReactClass({
             active={isTabActive}
           >
             <Text
-              style={[
+              style={StyleSheet.flatten([
                 isTabActive ? activeTextStyle : textStyle,
                 { fontSize: tabFontSize }
-              ]}
+              ])}
             >
               {name}
             </Text>
@@ -234,11 +234,11 @@ const ScrollableTabBar = createReactClass({
 
     return (
       <View
-        style={[
+        style={StyleSheet.flatten([
           styles.container,
           { backgroundColor: this.props.backgroundColor },
           this.props.style
-        ]}
+        ])}
         onLayout={this.onContainerLayout}
       >
         <ScrollView
@@ -255,11 +255,11 @@ const ScrollableTabBar = createReactClass({
           scrollsToTop={false}
         >
           <View
-            style={[
+            style={StyleSheet.flatten([
               styles.tabs,
               { width: this.state._containerWidth },
               this.props.tabsContainerStyle
-            ]}
+            ])}
             ref={'tabContainer'}
             onLayout={this.onTabContainerLayout}
           >
@@ -281,11 +281,11 @@ const ScrollableTabBar = createReactClass({
               );
             })}
             <Animated.View
-              style={[
+              style={StyleSheet.flatten([
                 tabUnderlineStyle,
                 dynamicTabUnderline,
                 this.props.underlineStyle
-              ]}
+              ])}
             />
           </View>
         </ScrollView>

@@ -102,16 +102,16 @@ class ActionSheetContainer extends Component {
         >
           <TouchableOpacity
             activeOpacity={1}
-            style={[styles.innerTouchable, this.state.style]}
+            style={StyleSheet.flatten([styles.innerTouchable, this.state.style])}
           >
             {this.state.title ? (
               <Text style={styles.touchableText}>{this.state.title}</Text>
             ) : null}
             <FlatList
-              style={[
+              style={StyleSheet.flatten([
                 styles.flatList,
                 { marginTop: this.state.title ? commonColor.marginTop : 0 },
-              ]}
+              ])}
               data={this.state.items}
               keyExtractor={(item, index) => String(index)}
               renderItem={({ index, item }) => {
@@ -131,12 +131,12 @@ class ActionSheetContainer extends Component {
                       this.state.callback(parseInt(index));
                       this.setState({ modalVisible: false });
                     }}
-                    style={[
+                    style={StyleSheet.flatten([
                       styles.listItem,
                       {
                         height: commonColor.listItemHeight,
                       },
-                    ]}
+                    ])}
                     icon
                   >
                     <Left>

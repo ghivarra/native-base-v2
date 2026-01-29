@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Animated, PanResponder } from 'react-native';
+import { View, Animated, PanResponder, StyleSheet } from 'react-native';
 import { ViewPropTypes } from "deprecated-react-native-prop-types";
 import clamp from 'clamp';
 import { connectStyle } from 'native-base-shoutem-theme';
@@ -277,20 +277,20 @@ class DeckSwiper extends Component {
           ) : (
             <View>
               <Animated.View
-                style={[
+                style={StyleSheet.flatten([
                   this.getCardStyles()[1],
                   this.getInitialStyle().topCard,
                   { opacity: this.state.fadeAnim }
-                ]}
+                ])}
                 {...this._panResponder.panHandlers}
               >
                 {this.props.renderEmpty && this.props.renderEmpty()}
               </Animated.View>
               <Animated.View
-                style={[
+                style={StyleSheet.flatten([
                   this.getCardStyles()[0],
                   this.getInitialStyle().topCard
-                ]}
+                ])}
                 {...this._panResponder.panHandlers}
               >
                 {this.props.renderItem(this.state.selectedItem)}
@@ -307,11 +307,11 @@ class DeckSwiper extends Component {
         ) : (
           <View>
             <Animated.View
-              style={[
+              style={StyleSheet.flatten([
                 this.getCardStyles()[1],
                 this.getInitialStyle().topCard,
                 { opacity: this.state.fadeAnim }
-              ]}
+              ])}
               {...this._panResponder.panHandlers}
             >
               {this.props.renderBottom
@@ -319,7 +319,7 @@ class DeckSwiper extends Component {
                 : this.props.renderItem(this.state.selectedItem2)}
             </Animated.View>
             <Animated.View
-              style={[this.getCardStyles()[0], this.getInitialStyle().topCard]}
+              style={StyleSheet.flatten([this.getCardStyles()[0], this.getInitialStyle().topCard])}
               {...this._panResponder.panHandlers}
             >
               {this.props.renderTop

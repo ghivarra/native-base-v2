@@ -98,11 +98,11 @@ const DefaultTabBar = createReactClass({
             active={isTabActive}
           >
             <Text
-              style={[
+              style={StyleSheet.flatten([
                 { fontSize: tabFontSize },
                 isTabActive ? activeTextStyle : textStyle,
                 { color: textColor }
-              ]}
+              ])}
             >
               {name}
             </Text>
@@ -148,10 +148,10 @@ const DefaultTabBar = createReactClass({
     });
     return (
       <TabContainer
-        style={[
+        style={StyleSheet.flatten([
           { backgroundColor: variables.tabDefaultBg },
           this.props.tabContainerStyle ? this.props.tabContainerStyle : {}
-        ]}
+        ])}
       >
         {this.props.tabs.map((name, page) => {
           const isTabActive = this.props.activeTab === page;
@@ -174,7 +174,7 @@ const DefaultTabBar = createReactClass({
           );
         })}
         <Animated.View
-          style={[tabUnderlineStyle, { left }, this.props.underlineStyle]}
+          style={StyleSheet.flatten([tabUnderlineStyle, { left }, this.props.underlineStyle])}
         />
       </TabContainer>
     );

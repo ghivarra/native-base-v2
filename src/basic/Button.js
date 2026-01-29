@@ -96,11 +96,11 @@ class Button extends React.PureComponent {
           : buttonStyle.flex;
       return (
         <View
-          style={[
+          style={StyleSheet.flatten([
             { maxHeight: buttonStyle.height },
             buttonStyle,
             { paddingTop: undefined, paddingBottom: undefined }
-          ]}
+          ])}
         >
           <TouchableNativeFeedback
             ref={this.setRoot}
@@ -111,7 +111,7 @@ class Button extends React.PureComponent {
             {...rootProps}
           >
             <View
-              style={[
+              style={StyleSheet.flatten([
                 // eslint-disable-next-line no-use-before-define
                 styles.childContainer,
                 {
@@ -120,7 +120,7 @@ class Button extends React.PureComponent {
                   height: buttonStyle.height,
                   flexGrow: buttonFlex
                 }
-              ]}
+              ])}
             >
               {children}
             </View>
