@@ -1,187 +1,99 @@
-/* eslint-disable new-cap */
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  TouchableOpacity,
-  Platform,
-  View,
-  TouchableNativeFeedback,
-  StyleSheet
-} from 'react-native';
-import { connectStyle } from 'native-base-shoutem-theme';
+import React, { memo } from "react";
+import { Pressable, Platform, View, StyleSheet } from "react-native";
 
-import variable from '../theme/variables/platform';
-import { PLATFORM } from '../theme/variables/commonColor';
-import mapPropsToStyleNames from '../utils/mapPropsToStyleNames';
+const COLORS = {
+  primary: "#3F51B5",
+  success: "#4CAF50",
+  danger: "#F44336",
+  warning: "#FF9800",
+  info: "#00BCD4",
+  dark: "#222",
+  light: "#F4F4F4",
+};
 
-import { Text } from './Text';
-import { TouchableOpacityProps } from '../utils/TouchableOpacityProps';
-
-
-class Button extends React.PureComponent {
-  setRoot(c){
-    this._root = c;
-  }
-
-  getInitialStyle() {
-    return {
-      borderedBtn: {
-        borderWidth: this.props.bordered
-          ? variable.buttonDefaultBorderWidth
-          : undefined,
-        borderRadius:
-          this.props.rounded && this.props.bordered
-            ? variable.borderRadiusLarge
-            : variable.buttonDefaultBorderRadius
-      }
-    };
-  }
-
-  prepareRootProps() {
-
-    // eslint-disable-next-line no-unused-vars
-    const {style, theme, ...others} = this.props;
-
-    return {
-      style: StyleSheet.flatten(StyleSheet.compose(this.getInitialStyle().borderedBtn, style)),
-      ...others
-    }
-
-  }
-
-  render() {
-    const { theme } = this.props
-    const variables = theme ? theme['@@shoutem.theme/themeStyle'].variables : variable;
-
-    const children =
-      Platform.OS === PLATFORM.IOS || !variables.buttonUppercaseAndroidText
-        ? this.props.children
-        : React.Children.map(this.props.children, child =>
-            child && child.type === Text
-              ? React.cloneElement(child, {
-                uppercase: this.props.buttonUppercaseAndroidText === false
-                ? false : variables.buttonUppercaseAndroidText,
-                ...child.props
-              })
-              : child
-          );
-
-    const rootProps = this.prepareRootProps();
-
-    if (
-      Platform.OS === PLATFORM.IOS ||
-      Platform.OS === PLATFORM.WEB ||
-      variables.androidRipple === false ||
-      Platform.Version < 21
-    ) {
-      return (
-        <TouchableOpacity
-          {...rootProps}
-          ref={this.setRoot}
-          activeOpacity={
-            this.props.activeOpacity > 0
-              ? this.props.activeOpacity
-              : variable.buttonDefaultActiveOpacity
-          }
-        >
-          {children}
-        </TouchableOpacity>
-      );
-    }
-    if (this.props.rounded) {
-      const buttonStyle = { ...rootProps.style };
-      const buttonFlex =
-        this.props.full || this.props.block
-          ? variable.buttonDefaultFlex
-          : buttonStyle.flex;
-      return (
-        <View
-          style={StyleSheet.flatten([
-            { maxHeight: buttonStyle.height },
-            buttonStyle,
-            { paddingTop: undefined, paddingBottom: undefined }
-          ])}
-        >
-          <TouchableNativeFeedback
-            ref={this.setRoot}
-            background={TouchableNativeFeedback.Ripple(
-              this.props.androidRippleColor || variables.androidRippleColor,
-              true
-            )}
-            {...rootProps}
-          >
-            <View
-              style={StyleSheet.flatten([
-                // eslint-disable-next-line no-use-before-define
-                styles.childContainer,
-                {
-                  paddingTop: buttonStyle.paddingTop,
-                  paddingBottom: buttonStyle.paddingBottom,
-                  height: buttonStyle.height,
-                  flexGrow: buttonFlex
-                }
-              ])}
-            >
-              {children}
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-      );
-    }
-    return (
-      <TouchableNativeFeedback
-        ref={this.setRoot}
-        onPress={this.props.onPress}
-        background={
-          this.props.transparent
-            ? TouchableNativeFeedback.Ripple('transparent')
-            : TouchableNativeFeedback.Ripple(
-                variables.androidRippleColor,
-                false
-              )
-        }
-        {...rootProps}
-      >
-        <View {...rootProps}>{children}</View>
-      </TouchableNativeFeedback>
-    );
-  }
-}
-
-Button.propTypes = {
-  ...TouchableOpacityProps,
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.number,
-    PropTypes.array
-  ]),
-  block: PropTypes.bool,
-  primary: PropTypes.bool,
-  transparent: PropTypes.bool,
-  success: PropTypes.bool,
-  danger: PropTypes.bool,
-  warning: PropTypes.bool,
-  info: PropTypes.bool,
-  bordered: PropTypes.bool,
-  disabled: PropTypes.bool,
-  rounded: PropTypes.bool,
-  large: PropTypes.bool,
-  small: PropTypes.bool,
-  active: PropTypes.bool
+const DEFAULTS = {
+  minHeight: 48,
+  radius: 4,
+  radiusRounded: 24,
+  paddingH: 16,
+  paddingV: 10,
+  ripple: "rgba(255,255,255,0.25)",
+  activeOpacity: 0.7,
 };
 
 const styles = StyleSheet.create({
-  childContainer: {
-    flexShrink: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
-const StyledButton = connectStyle(
-  'NativeBase.Button',
-  {},
-  mapPropsToStyleNames
-)(Button);
-export { StyledButton as Button };
+function resolveVariant(props) {
+  return Object.keys(COLORS).find(k => props[k]);
+}
+
+const Button = memo(props => {
+  const {
+    children,
+    style,
+    onPress,
+    disabled,
+    block,
+    full,
+    rounded,
+    bordered,
+    transparent,
+    small,
+    large,
+    activeOpacity = DEFAULTS.activeOpacity,
+  } = props;
+
+  const variant = resolveVariant(props);
+  const bgColor = variant ? COLORS[variant] : COLORS.primary;
+
+  const minHeight = small ? 36 : large ? 56 : DEFAULTS.minHeight;
+  const radius = rounded ? DEFAULTS.radiusRounded : DEFAULTS.radius;
+
+  const baseStyle = {
+    minHeight,
+    borderRadius: radius,
+    paddingHorizontal: DEFAULTS.paddingH,
+    paddingVertical: small ? 6 : large ? 14 : DEFAULTS.paddingV,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    opacity: disabled ? 0.5 : 1,
+  };
+
+  if (block || full) baseStyle.alignSelf = "stretch";
+
+  if (transparent) {
+    baseStyle.backgroundColor = "transparent";
+  } else if (bordered) {
+    baseStyle.borderWidth = 1;
+    baseStyle.borderColor = bgColor;
+    baseStyle.backgroundColor = "transparent";
+  } else {
+    baseStyle.backgroundColor = bgColor;
+  }
+
+  return (
+    <Pressable
+      disabled={disabled}
+      onPress={onPress}
+      android_ripple={
+        Platform.OS === "android" ? { color: DEFAULTS.ripple } : undefined
+      }
+      style={({ pressed }) => [
+        baseStyle,
+        pressed && Platform.OS === "ios" && { opacity: activeOpacity },
+        style,
+      ]}
+    >
+      <View style={styles.content}>{children}</View>
+    </Pressable>
+  );
+});
+
+export default Button;
