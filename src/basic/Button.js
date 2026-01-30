@@ -1,100 +1,153 @@
-import React from "react";
-import { Pressable, Platform, View, StyleSheet } from "react-native";
+/* eslint-disable new-cap */
+import React from 'react'
+import PropTypes from 'prop-types'
+import {
+  Pressable,
+  Platform,
+  View,
+  StyleSheet
+} from 'react-native'
+import { connectStyle } from 'native-base-shoutem-theme'
 
-const COLORS = {
-  primary: "#3F51B5",
-  success: "#4CAF50",
-  danger: "#F44336",
-  warning: "#FF9800",
-  info: "#00BCD4",
-  dark: "#222",
-  light: "#F4F4F4",
-};
+import variable from '../theme/variables/platform'
+import { PLATFORM } from '../theme/variables/commonColor'
+import mapPropsToStyleNames from '../utils/mapPropsToStyleNames'
 
-const DEFAULTS = {
-  minHeight: 48,
-  radius: 4,
-  radiusRounded: 24,
-  paddingH: 16,
-  paddingV: 10,
-  ripple: "rgba(255,255,255,0.25)",
-  activeOpacity: 0.7,
-};
+import { Text } from './Text'
+import { TouchableOpacityProps } from '../utils/TouchableOpacityProps'
 
 const styles = StyleSheet.create({
-  content: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+  childContainer: {
+    minHeight: variable.buttonDefaultHeight,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-});
+})
 
-function resolveVariant(props) {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const key in COLORS) {
-    if (props[key] === true) return key;
+class Button extends React.PureComponent {
+  setRoot = (c) => {
+    this._root = c
   }
-  return null;
-}
 
-function Button(props) {
-  const {
-    children,
-    style,
-    onPress,
-    disabled,
-    block,
-    full,
-    rounded,
-    bordered,
-    transparent,
-    small,
-    large,
-    activeOpacity = DEFAULTS.activeOpacity,
-  } = props;
+  getInitialStyle() {
+    return {
+      borderWidth: this.props.bordered
+        ? variable.buttonDefaultBorderWidth
+        : undefined,
+      borderRadius:
+        this.props.rounded && this.props.bordered
+          ? variable.borderRadiusLarge
+          : variable.buttonDefaultBorderRadius,
+    }
+  }
 
-  const variant = resolveVariant(props);
-  const bgColor = variant ? COLORS[variant] : COLORS.primary;
+  prepareRootProps() {
+    // eslint-disable-next-line no-unused-vars
+    const { style, theme, ...others } = this.props
 
-  const minHeight = small ? 36 : large ? 56 : DEFAULTS.minHeight;
-  const radius = rounded ? DEFAULTS.radiusRounded : DEFAULTS.radius;
-
-  const baseStyle = StyleSheet.flatten([
-    {
-      minHeight,
-      borderRadius: radius,
-      paddingHorizontal: DEFAULTS.paddingH,
-      paddingVertical: small ? 6 : large ? 14 : DEFAULTS.paddingV,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      opacity: disabled ? 0.5 : 1,
-    },
-    block || full ? { alignSelf: "stretch" } : null,
-    transparent
-      ? { backgroundColor: "transparent" }
-      : bordered
-      ? { borderWidth: 1, borderColor: bgColor, backgroundColor: "transparent" }
-      : { backgroundColor: bgColor },
-  ]);
-
-  return (
-    <Pressable
-      disabled={disabled}
-      onPress={onPress}
-      android_ripple={
-        Platform.OS === "android" ? { color: DEFAULTS.ripple } : undefined
-      }
-      style={({ pressed }) => StyleSheet.flatten([
-        baseStyle,
-        pressed && Platform.OS === "ios" && { opacity: activeOpacity },
+    return {
+      ...others,
+      style: StyleSheet.flatten([
+        this.getInitialStyle(),
         style,
-      ])}
-    >
-      <View style={styles.content}>{children}</View>
-    </Pressable>
-  );
+      ]),
+    }
+  }
+
+  renderChildren(variables) {
+    if (
+      Platform.OS === PLATFORM.IOS ||
+      !variables.buttonUppercaseAndroidText
+    ) {
+      return this.props.children
+    }
+
+    return React.Children.map(this.props.children, child =>
+      child && child.type === Text
+        ? React.cloneElement(child, {
+          uppercase:
+              this.props.buttonUppercaseAndroidText === false
+                ? false
+                : variables.buttonUppercaseAndroidText,
+          ...child.props,
+        })
+        : child
+    )
+  }
+
+  render() {
+    const { theme, disabled, activeOpacity } = this.props
+    const variables = theme
+      ? theme['@@shoutem.theme/themeStyle'].variables
+      : variable
+
+    const rootProps = this.prepareRootProps()
+    const children = this.renderChildren(variables)
+
+    return (
+      <Pressable
+        {...rootProps}
+        ref={this.setRoot}
+        disabled={disabled}
+        android_ripple={
+          Platform.OS === 'android' && variables.androidRipple !== false
+            ? {
+              color:
+                  this.props.androidRippleColor ||
+                  variables.androidRippleColor,
+            }
+            : undefined
+        }
+        style={({ pressed }) => [
+          rootProps.style,
+          pressed &&
+            Platform.OS === 'ios' && {
+              opacity:
+                activeOpacity > 0
+                  ? activeOpacity
+                  : variable.buttonDefaultActiveOpacity,
+            },
+        ]}
+      >
+        <View style={styles.childContainer}>
+          {children}
+        </View>
+      </Pressable>
+    )
+  }
 }
 
-Button.displayName = "Button";
-export default Button;
+Button.propTypes = {
+  ...TouchableOpacityProps,
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.number,
+    PropTypes.array,
+  ]),
+  block: PropTypes.bool,
+  primary: PropTypes.bool,
+  transparent: PropTypes.bool,
+  success: PropTypes.bool,
+  danger: PropTypes.bool,
+  warning: PropTypes.bool,
+  info: PropTypes.bool,
+  bordered: PropTypes.bool,
+  disabled: PropTypes.bool,
+  rounded: PropTypes.bool,
+  large: PropTypes.bool,
+  small: PropTypes.bool,
+  active: PropTypes.bool,
+}
+
+
+
+const StyledButton = connectStyle(
+  'NativeBase.Button',
+  {},
+  mapPropsToStyleNames
+)(Button)
+
+export { StyledButton as Button }
