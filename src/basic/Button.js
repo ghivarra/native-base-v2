@@ -96,4 +96,5 @@ const Button = memo(props => {
   );
 });
 
+Button.displayName = "Button";
 export default Button;
