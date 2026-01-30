@@ -30,7 +30,11 @@ const styles = StyleSheet.create({
 });
 
 function resolveVariant(props) {
-  return Object.keys(COLORS).find(k => props[k]);
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in COLORS) {
+    if (props[key] === true) return key;
+  }
+  return null;
 }
 
 function Button(props) {
@@ -55,28 +59,24 @@ function Button(props) {
   const minHeight = small ? 36 : large ? 56 : DEFAULTS.minHeight;
   const radius = rounded ? DEFAULTS.radiusRounded : DEFAULTS.radius;
 
-  const baseStyle = {
-    minHeight,
-    borderRadius: radius,
-    paddingHorizontal: DEFAULTS.paddingH,
-    paddingVertical: small ? 6 : large ? 14 : DEFAULTS.paddingV,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    opacity: disabled ? 0.5 : 1,
-  };
-
-  if (block || full) baseStyle.alignSelf = "stretch";
-
-  if (transparent) {
-    baseStyle.backgroundColor = "transparent";
-  } else if (bordered) {
-    baseStyle.borderWidth = 1;
-    baseStyle.borderColor = bgColor;
-    baseStyle.backgroundColor = "transparent";
-  } else {
-    baseStyle.backgroundColor = bgColor;
-  }
+  const baseStyle = StyleSheet.flatten([
+    {
+      minHeight,
+      borderRadius: radius,
+      paddingHorizontal: DEFAULTS.paddingH,
+      paddingVertical: small ? 6 : large ? 14 : DEFAULTS.paddingV,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      opacity: disabled ? 0.5 : 1,
+    },
+    block || full ? { alignSelf: "stretch" } : null,
+    transparent
+      ? { backgroundColor: "transparent" }
+      : bordered
+      ? { borderWidth: 1, borderColor: bgColor, backgroundColor: "transparent" }
+      : { backgroundColor: bgColor },
+  ]);
 
   return (
     <Pressable
@@ -85,11 +85,11 @@ function Button(props) {
       android_ripple={
         Platform.OS === "android" ? { color: DEFAULTS.ripple } : undefined
       }
-      style={({ pressed }) => [
+      style={({ pressed }) => StyleSheet.flatten([
         baseStyle,
         pressed && Platform.OS === "ios" && { opacity: activeOpacity },
         style,
-      ]}
+      ])}
     >
       <View style={styles.content}>{children}</View>
     </Pressable>
