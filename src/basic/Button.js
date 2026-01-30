@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { Pressable, Platform, View, StyleSheet } from "react-native";
 
 const COLORS = {
@@ -33,7 +33,7 @@ function resolveVariant(props) {
   return Object.keys(COLORS).find(k => props[k]);
 }
 
-const Button = memo(props => {
+function Button(props) {
   const {
     children,
     style,
@@ -94,7 +94,7 @@ const Button = memo(props => {
       <View style={styles.content}>{children}</View>
     </Pressable>
   );
-});
+}
 
 Button.displayName = "Button";
 export default Button;
